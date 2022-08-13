@@ -84,17 +84,18 @@ try {
 					eventid: LiveEventDetail.EventId,
 					name: LiveEventDetail.Name,
 					eventdate: LiveEventDetail.StartTime,
+					status: LiveEventDetail.Status,
 					added: pg.fn.now(),
 				})
 				.into('events')
 				.onConflict('eventid')
-				.merge(['name', 'added', 'eventdate']);
+				.merge(['name', 'added', 'eventdate', 'status']);
 		})
 	);
 	database.succeed();
 } catch (e) {
-	console.log(e);
 	database.fail();
+	console.error(e);
 } finally {
 	process.exit(0);
 }
