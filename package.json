@@ -1,0 +1,19 @@
+{
+	"name": "ufc-api",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.mjs"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"axios": "^0.27.2",
+		"dotenv": "^16.0.1",
+		"knex": "^2.2.0",
+		"ora": "^6.1.2",
+		"pg": "^8.7.3"
+	}
+}
