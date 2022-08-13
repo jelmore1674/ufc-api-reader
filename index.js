@@ -49,7 +49,7 @@ try {
 } catch (err) {
 	scanning.fail();
 	console.error(err);
-	process.exit(0);
+	process.exit(1);
 }
 
 const sorting = ora({
@@ -99,6 +99,7 @@ try {
 } catch (e) {
 	database.fail();
 	console.error(e);
+	process.exit(1);
 } finally {
 	process.exit(0);
 }
