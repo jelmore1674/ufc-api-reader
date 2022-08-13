@@ -21,10 +21,8 @@ jobs:
 
             - name: executing remote ssh commands using password
               uses: appleboy/ssh-action@master
-              env:
-                  DEPLOYMENT_HOST: ${{secrets.DEPLOYMENT_HOST}}
               with:
-                  host: ssh.justinelmore.dev
+                  host: ${{secrets.DEPLOYMENT_HOST}}
                   username: ubuntu
                   key: ${{ secrets.DEPLOYMENT_SSH_KEY }}
                   script: |
