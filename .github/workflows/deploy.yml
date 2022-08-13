@@ -28,7 +28,8 @@ jobs:
                   host: ssh.justinelmore.dev
                   username: ubuntu
                   key: ${{ secrets.DEPLOYMENT_SSH_KEY }}
-                  run: |
+                  envs: DB_URL
+                  script: |
                       export NVM_DIR=~/.nvm
                       source ~/.nvm/nvm.sh
                       cd ~/ufc-api-reader
