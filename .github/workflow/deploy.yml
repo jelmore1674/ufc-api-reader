@@ -1,0 +1,44 @@
+name: Deploy to server
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: '16.15.0'
+                  cache: 'yarn'
+
+            - run: yarn install --immutable
+
+            - name: Set up SSH access to servers
+              shell: bash
+              env:
+                  DEPLOYMENT_SSH_KEY: ${{secrets.DEPLOYMENT_SSH_KEY}}
+              run: |
+                  mkdir -p ~/.ssh/
+                  echo "$DEPLOYMENT_SSH_KEY" > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+            - name: Deploy to development server
+              env:
+                  DEPLOYMENT_HOST: ${{secrets.DEPLOYMENT_HOST}}
+                  DB_URL: ${{secrets.DB_URL}}
+              run: |
+                  export NVM_DIR=~/.nvm
+                  source ~/.nvm/nvm.sh
+                  ssh-keyscan ${DEPLOYMENT_HOST} >> ~/.ssh/known_hosts
+                  echo"DB_URL=$DB_URL" >> .env
+                  yarn
+                  chmod -x ./scripts/run.sh
+                  ./scripts/run.sh
+
+        env:
+            CI: true
