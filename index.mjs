@@ -83,11 +83,12 @@ try {
 				.insert({
 					eventid: LiveEventDetail.EventId,
 					name: LiveEventDetail.Name,
+					eventdate: LiveEventDetail.StartTime,
 					added: pg.fn.now(),
 				})
 				.into('events')
 				.onConflict('eventid')
-				.merge(['name', 'added']);
+				.merge(['name', 'added', 'eventdate']);
 		})
 	);
 	database.succeed();
