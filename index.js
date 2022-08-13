@@ -39,7 +39,7 @@ try {
 			eventId = eventId + 1;
 			// Only will add events that have not taken place yet.
 			if (Name.match(/UFC /gi) && Date.parse(StartTime) > new Date()) {
-				events.push(data);
+				events.push(response.data);
 			}
 		} else {
 			emptyEvent = true;
@@ -49,6 +49,7 @@ try {
 } catch (err) {
 	scanning.fail();
 	console.error(err);
+	process.exit(0);
 }
 
 const sorting = ora({
