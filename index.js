@@ -74,11 +74,6 @@ const database = ora({
 try {
 	await Promise.all(
 		events.map(async ({ LiveEventDetail }) => {
-			await pg('events').where({
-				eventid: LiveEventDetail.EventId,
-				name: LiveEventDetail.Name,
-			});
-
 			await pg
 				.insert({
 					eventid: LiveEventDetail.EventId,
