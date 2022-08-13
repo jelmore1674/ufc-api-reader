@@ -38,7 +38,7 @@ jobs:
                   echo "DB_URL=$DB_URL" >> .env
                   yarn
                   chmod -x ./scripts/run.sh
-                  ./scripts/run.sh
+                  zsh ./scripts/run.sh
 
         env:
             CI: true
