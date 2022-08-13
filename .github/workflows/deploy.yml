@@ -36,7 +36,6 @@ jobs:
                       git pull
                       echo "DB_URL=$DB_URL" >> .env
                       yarn
-                      chmod -x ./scripts/run.sh
                       ./scripts/run.sh
 
         env:
