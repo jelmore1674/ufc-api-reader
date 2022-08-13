@@ -23,12 +23,10 @@ jobs:
               uses: appleboy/ssh-action@master
               env:
                   DEPLOYMENT_HOST: ${{secrets.DEPLOYMENT_HOST}}
-                  DB_URL: ${{secrets.DB_URL}}
               with:
                   host: ssh.justinelmore.dev
                   username: ubuntu
                   key: ${{ secrets.DEPLOYMENT_SSH_KEY }}
-                  envs: DB_URL
                   script: |
                       export NVM_DIR=~/.nvm
                       source ~/.nvm/nvm.sh
