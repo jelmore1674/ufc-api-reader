@@ -34,7 +34,6 @@ jobs:
                       source ~/.nvm/nvm.sh
                       cd ~/ufc-api-reader
                       git pull
-                      echo "DB_URL=$DB_URL" >> .env
                       yarn
                       ./scripts/run.sh
 
