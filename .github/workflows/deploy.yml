@@ -35,6 +35,7 @@ jobs:
                   export NVM_DIR=~/.nvm
                   source ~/.nvm/nvm.sh
                   ssh-keyscan ${DEPLOYMENT_HOST} >> ~/.ssh/known_hosts
+                  ssh ${DEPLOYMENT_HOST}
                   cd ~/ufc-api-reader
                   git pull
                   echo "DB_URL=$DB_URL" >> .env
