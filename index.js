@@ -38,7 +38,10 @@ try {
 		if (EventId) {
 			eventId = eventId + 1;
 			// Only will add events that have not taken place yet.
-			if (Name.match(/UFC /gi) && Date.parse(StartTime) > new Date()) {
+			if (
+				Name.match(/UFC /gi) &&
+				Date.parse(StartTime) > new Date().setDate(today.getDate() + 3)
+			) {
 				events.push(response.data);
 			}
 		} else {
