@@ -5,5 +5,7 @@ echo "Making sure in correct directory.."
 cd ~/ufc-api-reader
 echo "Installing packages..."
 yarn
-echo "Pull Database and generate prisma..."
-yarn db:pull
+echo "Pull Database..."
+yarn prisma:pull
+echo "Generate Prisma Client..."
+yarn prisma:generate

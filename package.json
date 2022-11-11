@@ -6,7 +6,8 @@
 	"type": "module",
 	"scripts": {
 		"start": "node index.js",
-		"db:pull": "DATABASE_URL=$(grep DB_URL .env | cut -d '=' -f2) yarn prisma db pull && yarn prisma generate client"
+		"prisma:generate": "yarn primsa generate client",
+		"prisma:pull": "DATABASE_URL=$(grep DB_URL .env | cut -d '=' -f2) yarn prisma db pull"
 	},
 	"keywords": [],
 	"author": "",
