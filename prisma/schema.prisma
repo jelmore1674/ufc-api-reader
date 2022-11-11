@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model events {
+  id        Int       @id @default(autoincrement())
+  eventid   Int       @unique
+  name      String?   @db.VarChar(255)
+  status    String?   @db.VarChar(255)
+  eventdate DateTime? @db.Timestamp(6)
+  added     DateTime? @db.Timestamp(6)
+  updated   DateTime? @db.Timestamp(6)
+}
+
+model profile {
+  id         String    @id(map: "Profile_pkey") @db.Uuid
+  first_name String?
+  last_name  String?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+}

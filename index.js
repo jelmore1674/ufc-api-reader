@@ -2,6 +2,8 @@ import axios from 'axios';
 import 'dotenv/config';
 import knex from 'knex';
 import ora from 'ora';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 // Connect to database
 const pg = knex({
@@ -86,17 +88,36 @@ try {
 	await Promise.all(
 		events.map(async ({ LiveEventDetail }) => {
 			const { EventId, Name, Status, StartTime } = LiveEventDetail;
-			await pg
-				.insert({
+			return await prisma.events.upsert({
+				where: {
+					eventid: EventId,
+				},
+				update: {
 					eventid: EventId,
 					name: Name,
 					status: Status,
-					eventdate: StartTime,
-					added: pg.fn.now(),
-				})
-				.into('events')
-				.onConflict('eventid')
-				.merge(['name', 'added', 'eventdate', 'status']);
+					eventdate: new Date(StartTime),
+					updated: new Date(),
+				},
+				create: {
+					eventid: EventId,
+					name: Name,
+					status: Status,
+					eventdate: new Date(StartTime),
+					added: new Date(),
+				},
+			});
+			// return await pg
+			// 	.insert({
+			// 		eventid: EventId,
+			// 		name: Name,
+			// 		status: Status,
+			// 		eventdate: StartTime,
+			// 		added: pg.fn.now(),
+			// 	})
+			// 	.into('events')
+			// 	.onConflict('eventid')
+			// 	.merge(['name', 'added', 'eventdate', 'status']);
 		})
 	);
 	database.succeed();
