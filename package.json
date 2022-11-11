@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "node index.js",
-		"migrate": "node ./scripts/migrate.js"
+		"db:pull": "DATABASE_URL=$(grep DB_URL .env | cut -d '=' -f2) yarn prisma db pull && yarn prisma generate client"
 	},
 	"keywords": [],
 	"author": "",
@@ -14,8 +14,6 @@
 	"dependencies": {
 		"@prisma/client": "^4.6.1",
 		"axios": "^0.27.2",
-		"dotenv": "^16.0.3",
-		"knex": "^2.2.0",
 		"ora": "^6.1.2",
 		"pg": "^8.7.3",
 		"prisma": "^4.6.1"

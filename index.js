@@ -1,21 +1,12 @@
 import axios from 'axios';
-import 'dotenv/config';
-import knex from 'knex';
 import ora from 'ora';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-// Connect to database
-const pg = knex({
-	client: 'pg',
-	connection: process.env.DB_URL,
-	searchPath: ['knex', 'public'],
-});
-
 // events stores only events that have not happened yet
 let events = [];
 // starting point to search events by id
-let eventId = 1090;
+let eventId = 1110;
 // for the do while... keeps running as long as event is not empty
 let emptyEvent = false;
 
@@ -88,7 +79,7 @@ try {
 	await Promise.all(
 		events.map(async ({ LiveEventDetail }) => {
 			const { EventId, Name, Status, StartTime } = LiveEventDetail;
-			return await prisma.events.upsert({
+			return prisma.events.upsert({
 				where: {
 					eventid: EventId,
 				},
@@ -107,17 +98,6 @@ try {
 					added: new Date(),
 				},
 			});
-			// return await pg
-			// 	.insert({
-			// 		eventid: EventId,
-			// 		name: Name,
-			// 		status: Status,
-			// 		eventdate: StartTime,
-			// 		added: pg.fn.now(),
-			// 	})
-			// 	.into('events')
-			// 	.onConflict('eventid')
-			// 	.merge(['name', 'added', 'eventdate', 'status']);
 		})
 	);
 	database.succeed();

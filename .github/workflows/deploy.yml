@@ -29,8 +29,8 @@ jobs:
                       export NVM_DIR=~/.nvm
                       source ~/.nvm/nvm.sh
                       cd ~/ufc-api-reader
-                      git pull
-                      ./scripts/run.sh
+                      git pull origin HEAD
+                      ./scripts/post-deploy.sh
 
         env:
             CI: true
