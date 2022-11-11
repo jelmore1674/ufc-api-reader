@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "node index.js",
-		"prisma:generate": "yarn primsa generate client",
+		"prisma:generate": "yarn prisma generate client",
 		"prisma:pull": "DATABASE_URL=$(grep DB_URL .env | cut -d '=' -f2) yarn prisma db pull"
 	},
 	"keywords": [],
