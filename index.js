@@ -78,7 +78,34 @@ try {
 	// insert events into the database
 	await Promise.all(
 		events.map(async ({ LiveEventDetail }) => {
-			const { EventId, Name, Status, StartTime } = LiveEventDetail;
+			const { EventId, Name, Status, StartTime, FightCard } =
+				LiveEventDetail;
+			// insert all fights for the event into the db
+			await Promise.all(
+				FightCard.map(async ({ FightId, Status, Fighters }) => {
+					const [winner] = Fighters.filter(
+						(fighter) => fighter.Outcome.Outcome === 'Win'
+					);
+					return prisma.fight.upsert({
+						where: {
+							id: FightId,
+						},
+						update: {
+							id: FightId,
+							event_id: EventId,
+							status: Status,
+							winner: winner && winner.FighterId,
+							updated: new Date(),
+						},
+						create: {
+							id: FightId,
+							event_id: EventId,
+							status: Status,
+						},
+					});
+				})
+			);
+
 			return prisma.events.upsert({
 				where: {
 					eventid: EventId,
