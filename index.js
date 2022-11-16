@@ -2,14 +2,22 @@ import axios from 'axios';
 import ora from 'ora';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-
-// events stores only events that have not happened yet
-let events = [];
+// get events from db
+let events = await prisma.events.findMany({
+	select: {
+		eventid: true,
+	},
+	orderBy: {
+		eventid: 'desc',
+	},
+});
 // starting point to search events by id
-let eventId = 1110;
+let eventId = events[0].eventid;
+
 // for the do while... keeps running as long as event is not empty
 let emptyEvent = false;
 
+const TODAY = new Date();
 // Conosle animation
 const scanning = ora({
 	color: 'red',
@@ -21,21 +29,28 @@ const scanning = ora({
 }).start();
 
 try {
+	events = await Promise.all(
+		events.map(async ({ eventid }) => {
+			// fetch event from api
+			const { data } = await axios.get(
+				`https://d29dxerjsp82wz.cloudfront.net/api/v3/event/live/${eventid}.json`
+			);
+			return data;
+		})
+	);
+
 	do {
 		// fetch event from api
 		const response = await axios.get(
 			`https://d29dxerjsp82wz.cloudfront.net/api/v3/event/live/${eventId}.json`
 		);
-		const { EventId, Name, StartTime } = response.data.LiveEventDetail;
+		const { EventId, Name } = response.data.LiveEventDetail;
 		// Checking if there is a EventId
 		if (EventId) {
 			eventId = eventId + 1;
-			let today = new Date();
+
 			// Only will add events that have not taken place yet.
-			if (
-				Name.match(/UFC /gi) &&
-				Date.parse(StartTime) > today.setDate(today.getDate() - 3)
-			) {
+			if (Name.match(/UFC /gi)) {
 				events.push(response.data);
 			}
 		} else {
@@ -58,11 +73,17 @@ const sorting = ora({
 	},
 }).start();
 // sort events by event date
-events = events.sort(
-	(a, b) =>
-		new Date(a.LiveEventDetail.StartTime) -
-		new Date(b.LiveEventDetail.StartTime)
-);
+events = events
+	.sort(
+		(a, b) =>
+			new Date(a.LiveEventDetail.StartTime) -
+			new Date(b.LiveEventDetail.StartTime)
+	)
+	.filter(
+		(event) =>
+			Date.parse(event.LiveEventDetail.StartTime) >
+			TODAY.setDate(TODAY.getDate() - 3)
+	);
 sorting.succeed();
 
 const database = ora({
@@ -83,9 +104,19 @@ try {
 			// insert all fights for the event into the db
 			await Promise.all(
 				FightCard.map(async ({ FightId, Status, Fighters }) => {
+					// Gets the winnder from the fight
 					const [winner] = Fighters.filter(
 						(fighter) => fighter.Outcome.Outcome === 'Win'
 					);
+					// Checks if fight is a draw
+					const [isDraw] = Fighters.filter(
+						(fighter) => fighter.Outcome.Outcome === 'Draw'
+					);
+					// Checks if fight is a no contest
+					const [isNoContest] = Fighters.filter(
+						(fighter) => fighter.Outcome.Outcome === 'No Contest'
+					);
+
 					return prisma.fight.upsert({
 						where: {
 							id: FightId,
@@ -95,6 +126,8 @@ try {
 							event_id: EventId,
 							status: Status,
 							winner: winner && winner.FighterId,
+							draw: Boolean(isDraw),
+							no_contest: Boolean(isNoContest),
 							updated: new Date(),
 						},
 						create: {
