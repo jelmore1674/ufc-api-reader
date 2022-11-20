@@ -16,8 +16,10 @@
 		"@prisma/client": "^4.6.1",
 		"axios": "^0.27.2",
 		"ora": "^6.1.2",
-		"pg": "^8.7.3",
-		"prisma": "^4.6.1"
+		"pg": "^8.7.3"
 	},
-	"packageManager": "yarn@1.22.19"
+	"packageManager": "yarn@1.22.19",
+	"devDependencies": {
+		"prisma": "^4.6.1"
+	}
 }
